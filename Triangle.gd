@@ -6,7 +6,7 @@ extends KinematicBody2D
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	$TriangleLifetime.start(rand_range(4, 6)) # Replace with function body.
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -27,3 +27,7 @@ func _handleCollision():
 		
 		if (collision.collider.name == "Circle"):
 			collision.collider.hide()
+
+
+func _on_TriangleLifetime_timeout():
+	queue_free() # Replace with function body.

@@ -8,7 +8,10 @@ var target = Vector2()
 var velocity = Vector2()
 var currentState = State.NORMAL
 
-func _input(event):
+func _ready():
+	hide()
+	
+func _input(event):		
 	if event.is_action_pressed('click') and currentState != State.DASH:
 		target = get_global_mouse_position()
 		
@@ -16,6 +19,15 @@ func _input(event):
 		currentState = State.DASH
 		$DashTimer.start()
 
+func start(pos):
+	position = pos
+	target = position
+	show()
+	$CollisionShape2D.disabled = false
+	
+func hidePlayer():
+	hide()
+	
 func _physics_process(delta):
 	velocity = (target - position).normalized() * speed
 	rotation = velocity.angle()
@@ -30,3 +42,5 @@ func _physics_process(delta):
 
 func _on_DashTimer_timeout():
 	currentState = State.NORMAL
+
+

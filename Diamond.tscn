@@ -5,7 +5,9 @@
 
 [sub_resource type="CapsuleShape2D" id=1]
 
-[node name="Diamond" type="Area2D"]
+[node name="Diamond" type="Area2D" groups=[
+"diamonds",
+]]
 script = ExtResource( 2 )
 __meta__ = {
 "_edit_group_": true

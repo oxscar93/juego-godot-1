@@ -1,5 +1,7 @@
 extends KinematicBody2D
 
+signal onPlayerDefeated
+
 var speed = 75
 
 # Called when the node enters the scene tree for the first time.
@@ -24,7 +26,7 @@ func _handleCollision():
 		var collision = get_slide_collision(i)
 		
 		if (collision.collider.name == "Circle"):
-			collision.collider.hide()
+			emit_signal("onPlayerDefeated")
 
 
 func _on_TriangleLifetime_timeout():

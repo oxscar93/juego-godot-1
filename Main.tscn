@@ -12,12 +12,18 @@ script = ExtResource( 3 )
 [node name="DiamondTimer" type="Timer" parent="."]
 wait_time = 0.25
 one_shot = true
-autostart = true
 
 [node name="TriangleTimer" type="Timer" parent="."]
 wait_time = 5.0
-autostart = true
 
 [node name="HUD" parent="." instance=ExtResource( 2 )]
+
+[node name="StartTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="StartPosition" type="Position2D" parent="."]
+position = Vector2( 250, 450 )
 [connection signal="timeout" from="DiamondTimer" to="." method="_on_DiamondTimer_timeout"]
 [connection signal="timeout" from="TriangleTimer" to="." method="_on_TriangleTimer_timeout"]
+[connection signal="newGame" from="HUD" to="." method="_new_game"]
+[connection signal="timeout" from="StartTimer" to="." method="_on_StartTimer_timeout"]

@@ -1,5 +1,7 @@
 extends KinematicBody2D
 
+signal onPlayerDefeated
+
 enum State {NORMAL, DASH} #Refactorizar a state pattern
 
 export (int) var speed = 100
@@ -11,6 +13,12 @@ var currentState = State.NORMAL
 func _ready():
 	hide()
 	
+func start(pos):
+	position = pos
+	target = position
+	show()
+	$CollisionShape2D.disabled = false
+	
 func _input(event):		
 	if event.is_action_pressed('click') and currentState != State.DASH:
 		target = get_global_mouse_position()
@@ -18,15 +26,6 @@ func _input(event):
 	if event.is_action_pressed('ui_select'):
 		currentState = State.DASH
 		$DashTimer.start()
-
-func start(pos):
-	position = pos
-	target = position
-	show()
-	$CollisionShape2D.disabled = false
-	
-func hidePlayer():
-	hide()
 	
 func _physics_process(delta):
 	velocity = (target - position).normalized() * speed
@@ -38,8 +37,11 @@ func _physics_process(delta):
 		move_and_slide(velocity)
 	elif (currentState == State.DASH):
 		move_and_slide((target - position).normalized() * speed * 3)
-	
 
+func kill():
+	emit_signal('onPlayerDefeated')
+	hide()
+	
 func _on_DashTimer_timeout():
 	currentState = State.NORMAL
 

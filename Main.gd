@@ -3,13 +3,15 @@ extends Node2D
 var target = Vector2()
 var velocity = Vector2()
 var diamond = preload("res://Diamond.tscn")
-var triangle = preload("res://Triangle.tscn")
-var diamondCount = 20
-var triangleCount = 5
-# Called when the node enters the scene tree for the first time.
+var hole = preload("res://Hole.tscn")
+var diamondCount = 10
+var holeCount = 3
+var screenSize = Vector2()
+
 func _ready():
+	screenSize = get_viewport().get_visible_rect().size
 	randomize()
-# Called every frame. 'delta' is the elapsed time since the previous frame.
+	
 func _process(delta):
 	pass
 
@@ -17,7 +19,6 @@ func _new_game():
 	$StartTimer.start()
 	
 func game_over():
-	$TriangleTimer.stop()
 	$DiamondTimer.stop()	
 	$HUD.show_game_over()
 	
@@ -27,7 +28,7 @@ func _on_DiamondTimer_timeout():
 	_initializeDiamonds()
 
 func _on_TriangleTimer_timeout():	
-	_initializeEnemies()
+	_initializeHoles()
 	
 func _initializePlayer():
 	$Circle.start($StartPosition.position)
@@ -36,38 +37,37 @@ func _initializeDiamonds():
 	for i in range(diamondCount):
 		var new_diamond = diamond.instance()
 	
-		new_diamond.global_position.x = rand_range(0, 1000)
-		new_diamond.global_position.y = rand_range(0, 600)
+		new_diamond.global_position = _getRandomPosition()
 
 		new_diamond.connect("onDiamondRecolected", self, "_onDiamond_Recolected")
 		
 		add_child(new_diamond) 
 		
-func _initializeEnemies():
-	for i in range(triangleCount):
-		var new_triangle = triangle.instance()
+func _initializeHoles():
+	for i in range(holeCount):
+		var new_hole = hole.instance()
 	
-		new_triangle.global_position.x = rand_range(0, 1000)
-		new_triangle.global_position.y = rand_range(0, 600)
+		new_hole.global_position = _getRandomPosition()
 
-		new_triangle.connect("onPlayerDefeated", self, "game_over")
-		add_child(new_triangle) 
-
+		add_child(new_hole)
+		
 func _onDiamond_Recolected():
 	$HUD.updateScore() 
 
 func _on_StartTimer_timeout():
 	_initializePlayer()
 	_initializeDiamonds()
-	#$DiamondTimer.start() implementar bonus de diamonds
+	_initializeHoles() 
 	
-	#Setear un tiempo de espera antes de iniciar los enemigos
-	yield(get_tree().create_timer(1), "timeout")
-	
-	_initializeEnemies() 
-	$TriangleTimer.start()
+	$DiamondTimer.start()
 	
 func _clearGame():
-	$Circle.hidePlayer()
+	$Circle.hide()
+	
 	get_tree().call_group("triangles", "queue_free")
 	get_tree().call_group("diamonds", "queue_free")
+	get_tree().call_group("holes", "queue_free")
+	
+func _getRandomPosition():
+	return Vector2(rand_range(0, screenSize.x), rand_range(0, screenSize.y))
+	

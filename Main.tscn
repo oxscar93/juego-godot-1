@@ -10,11 +10,7 @@ script = ExtResource( 3 )
 [node name="Circle" parent="." instance=ExtResource( 1 )]
 
 [node name="DiamondTimer" type="Timer" parent="."]
-wait_time = 0.25
-one_shot = true
-
-[node name="TriangleTimer" type="Timer" parent="."]
-wait_time = 5.0
+wait_time = 10.0
 
 [node name="HUD" parent="." instance=ExtResource( 2 )]
 
@@ -23,7 +19,7 @@ one_shot = true
 
 [node name="StartPosition" type="Position2D" parent="."]
 position = Vector2( 250, 450 )
+[connection signal="onPlayerDefeated" from="Circle" to="." method="game_over"]
 [connection signal="timeout" from="DiamondTimer" to="." method="_on_DiamondTimer_timeout"]
-[connection signal="timeout" from="TriangleTimer" to="." method="_on_TriangleTimer_timeout"]
 [connection signal="newGame" from="HUD" to="." method="_new_game"]
 [connection signal="timeout" from="StartTimer" to="." method="_on_StartTimer_timeout"]

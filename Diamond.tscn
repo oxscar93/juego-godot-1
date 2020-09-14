@@ -25,4 +25,4 @@ shape = SubResource( 1 )
 __meta__ = {
 "_edit_group_": true
 }
-[connection signal="body_entered" from="." to="." method="_on_Diamond_body_entered"]
+[connection signal="area_entered" from="." to="." method="_on_Diamond_area_entered"]

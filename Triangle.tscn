@@ -5,7 +5,7 @@
 
 [sub_resource type="RectangleShape2D" id=1]
 
-[node name="Triangle" type="KinematicBody2D" groups=[
+[node name="Triangle" type="Area2D" groups=[
 "triangles",
 ]]
 script = ExtResource( 2 )
@@ -19,4 +19,5 @@ shape = SubResource( 1 )
 
 [node name="TriangleLifetime" type="Timer" parent="."]
 wait_time = 3.0
+[connection signal="area_entered" from="." to="." method="_on_Triangle_area_entered"]
 [connection signal="timeout" from="TriangleLifetime" to="." method="_on_TriangleLifetime_timeout"]

@@ -1,4 +1,4 @@
-extends KinematicBody2D
+extends Area2D
 
 signal onPlayerDefeated
 
@@ -34,9 +34,10 @@ func _physics_process(delta):
 	velocity.rotated(rotation)
 	
 	if (target - position).length() > 5 and currentState == State.NORMAL:
-		move_and_slide(velocity)
+		position += velocity * delta
 	elif (currentState == State.DASH):
-		move_and_slide((target - position).normalized() * speed * 3)
+		position += (target - position).normalized() * speed * 3 * delta
+
 
 func kill():
 	emit_signal('onPlayerDefeated')

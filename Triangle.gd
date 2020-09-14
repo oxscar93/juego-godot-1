@@ -1,38 +1,44 @@
-extends KinematicBody2D
+extends Area2D
 
-signal onPlayerDefeated
+const PLAYER = "Circle"
 
-var speed = 75
+var speed = 100
+var acceleration = 0.8
 var currentPlayer = null
+var velocity = Vector2()
+var playerPosition = Vector2()
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	hide()
-	$TriangleLifetime.start(rand_range(4, 6)) # Replace with function body.
+	$TriangleLifetime.start(rand_range(4, 6)) 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if (currentPlayer == null):
 		return
-			
-	var playerPosition = currentPlayer.position	
+		
 	if (playerPosition != null):
-		var velocity = (playerPosition - position).normalized() * speed
+		var newSpeed = speed
+		
+		if (playerPosition.y != currentPlayer.position.y and playerPosition.x != currentPlayer.position.x):
+			 newSpeed = speed * acceleration
+		
+		playerPosition = currentPlayer.position				
+		velocity = (playerPosition - position).normalized() * newSpeed	
 		
 		look_at(playerPosition)
-		if (playerPosition).length() > 5:
-			show()
-			move_and_slide(velocity)
-			_handleCollision()
-			
+		show()		
+
+func _physics_process(delta):			
+	position += velocity * delta
+	
 func setPlayer(player):
 	currentPlayer = player
-
-func _handleCollision():
-	for i in get_slide_count():
-		var collision = get_slide_collision(i)
-		
-		if (collision.collider.name == "Circle"):
-			collision.collider.kill()
 			
 func _on_TriangleLifetime_timeout():
 	queue_free() # Replace with function body.
+
+func _on_Triangle_area_entered(area):
+	if (area.get_name() == PLAYER):
+		area.kill()

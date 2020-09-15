@@ -1,11 +1,12 @@
 extends Node2D
 
+const DIAMOND_COUNT = 10
+const HOLE_COUNT = 5
+
 var target = Vector2()
 var velocity = Vector2()
 var diamond = preload("res://Diamond.tscn")
 var hole = preload("res://Hole.tscn")
-var diamondCount = 10
-var holeCount = 3
 var screenSize = Vector2()
 
 func _ready():
@@ -34,19 +35,19 @@ func _initializePlayer():
 	$Circle.start($StartPosition.position)
 	
 func _initializeDiamonds():
-	for i in range(diamondCount):
+	for i in range(DIAMOND_COUNT):
 		var new_diamond = diamond.instance()
 	
 		new_diamond.global_position = _getRandomPosition()
-
 		new_diamond.connect("onDiamondRecolected", self, "_onDiamond_Recolected")
 		
 		add_child(new_diamond) 
 		
 func _initializeHoles():
-	for i in range(holeCount):
+	for i in range(HOLE_COUNT):
 		var new_hole = hole.instance()
 	
+		new_hole.init($Circle)
 		new_hole.global_position = _getRandomPosition()
 
 		add_child(new_hole)

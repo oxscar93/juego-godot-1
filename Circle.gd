@@ -4,7 +4,9 @@ signal onPlayerDefeated
 
 enum State {NORMAL, DASH} #Refactorizar a state pattern
 
-export (int) var speed = 100
+const SPEED = 100
+const MIN_MOUSE_DISTANCE = 50
+const MIN_DISTANCE = 5
 
 var target = Vector2()
 var velocity = Vector2()
@@ -17,33 +19,47 @@ func start(pos):
 	position = pos
 	target = position
 	show()
-	$CollisionShape2D.disabled = false
 	
-func _input(event):		
-	if event.is_action_pressed('click') and currentState != State.DASH:
+func _input(event):				
+	if currentState != State.DASH:
 		target = get_global_mouse_position()
 		
 	if event.is_action_pressed('ui_select'):
-		currentState = State.DASH
-		$DashTimer.start()
+		_executeDash()
 	
-func _physics_process(delta):
-	velocity = (target - position).normalized() * speed
-	rotation = velocity.angle()
+func _physics_process(delta):	
+	var distance = target.distance_to(position)
+	var nextPosition = (target - position).normalized()
 	
-	velocity.rotated(rotation)
-	
-	if (target - position).length() > 5 and currentState == State.NORMAL:
-		position += velocity * delta
+	if (distance < MIN_DISTANCE):
+		return 
+			
+	if (currentState == State.NORMAL):
+		velocity = nextPosition * _getSpeed()		
 	elif (currentState == State.DASH):
-		position += (target - position).normalized() * speed * 3 * delta
-
-
+		velocity = nextPosition *_getDashSpeed()
+	
+	rotation = velocity.angle()
+	position += velocity * delta
+	
+	
 func kill():
 	emit_signal('onPlayerDefeated')
 	hide()
 	
+func _executeDash():
+	var mousePosition = get_global_mouse_position()
+	
+	if (position.distance_to(mousePosition) > MIN_MOUSE_DISTANCE):
+		target = mousePosition
+		currentState = State.DASH
+		$DashTimer.start()
+		
+func _getSpeed():
+	return SPEED
+	
+func _getDashSpeed():
+	return SPEED * 3
+	
 func _on_DashTimer_timeout():
 	currentState = State.NORMAL
-
-

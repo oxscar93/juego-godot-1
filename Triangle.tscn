@@ -15,9 +15,10 @@ scale = Vector2( 0.25, 0.25 )
 texture = ExtResource( 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2( 1.5, 1.5 )
 shape = SubResource( 1 )
 
 [node name="TriangleLifetime" type="Timer" parent="."]
-wait_time = 3.0
+wait_time = 1.5
 [connection signal="area_entered" from="." to="." method="_on_Triangle_area_entered"]
 [connection signal="timeout" from="TriangleLifetime" to="." method="_on_TriangleLifetime_timeout"]
